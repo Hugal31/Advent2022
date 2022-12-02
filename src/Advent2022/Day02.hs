@@ -5,22 +5,22 @@ import Advent2022.Day (Day, makeDayComplex)
 day :: Day
 day = makeDayComplex parse1 solve1 parse2 solve2
 
+data Hand = Rock | Paper | Scissors deriving(Enum, Eq, Show)
+data Game = Game Hand Hand deriving (Eq, Show)
+data GameHint = GameHint Hand Ordering deriving (Eq, Show)
+
 solve1 :: [Game] -> Int
-solve1 = totalRoundScores
+solve1 = sum . map roundScore
 
 solve2 :: [GameHint] -> Int
-solve2 = foldr ((+) . gameHintScore) 0
+solve2 = sum . map gameHintScore
 
-data Play = Rock | Paper | Scissors deriving(Eq, Show)
-data Game = Game Play Play deriving (Eq, Show)
-data GameHint = GameHint Play Ordering deriving (Eq, Show)
-
-playScore :: Play -> Int
+playScore :: Hand -> Int
 playScore Rock = 1
 playScore Paper = 2
 playScore Scissors = 3
 
-instance Ord Play where
+instance Ord Hand where
   compare Rock Rock = EQ
   compare Paper Paper = EQ
   compare Scissors Scissors = EQ
@@ -29,26 +29,20 @@ instance Ord Play where
   compare Scissors Rock = LT
   compare a b = compare EQ $ compare b a
 
--- TODO Maybe use Enum?
-winnerPlay :: Play -> Play
-winnerPlay Rock = Paper
-winnerPlay Paper = Scissors
-winnerPlay Scissors = Rock
-loserPlay :: Play -> Play
-loserPlay Rock = Scissors
-loserPlay Paper = Rock
-loserPlay Scissors = Paper
+winnerHand :: Hand -> Hand
+winnerHand Scissors = Rock
+winnerHand hand = succ hand
+loserHand :: Hand -> Hand
+loserHand Rock = Scissors
+loserHand hand = pred hand
 
-guessPlay :: GameHint -> Play
-guessPlay (GameHint opponent LT) = loserPlay opponent
-guessPlay (GameHint opponent EQ) = opponent
-guessPlay (GameHint opponent GT) = winnerPlay opponent
+guessHand :: GameHint -> Hand
+guessHand (GameHint opponent LT) = loserHand opponent
+guessHand (GameHint opponent EQ) = opponent
+guessHand (GameHint opponent GT) = winnerHand opponent
 
 gameHintScore :: GameHint -> Int
-gameHintScore game@(GameHint _ outcome) = roundOutcomeScore outcome + playScore (guessPlay game)
-
-totalRoundScores :: [Game] -> Int
-totalRoundScores = foldr ((+) . roundScore) 0
+gameHintScore game@(GameHint _ outcome) = roundOutcomeScore outcome + playScore (guessHand game)
 
 roundScore :: Game -> Int
 roundScore (Game opponent mine) = playScore mine + roundOutcomeScore (mine `compare` opponent)
@@ -58,40 +52,29 @@ roundOutcomeScore LT = 0
 roundOutcomeScore EQ = 3
 roundOutcomeScore GT = 6
 
+-- Parsing
+
 parse1 :: String -> [Game]
-parse1 content = map readGame $ lines content
+parse1 content = map read $ lines content
 
--- TODO This can be improved
-readGame :: String -> Game
-readGame line = listToGame $ take 2 $ map readPlay $ words line
+instance Read Game where
+  readsPrec _ (a : ' ' : b : s) = [(Game (read [a]) (read [b]), s)]
+  readsPrec _ _ = []
 
-listToGame :: [Play] -> Game
-listToGame [opponent, mine] = Game opponent mine
-listToGame _ = error "Invalid game"
-
--- TODO Implement Read
-readPlay :: String -> Play
-readPlay "A" = Rock
-readPlay "X" = Rock
-readPlay "B" = Paper
-readPlay "Y" = Paper
-readPlay "C" = Scissors
-readPlay "Z" = Scissors
-readPlay _ = error "Invalid play char"
+instance Read Hand where
+  readsPrec _ ('A' : s) = [(Rock, s)]
+  readsPrec _ ('B' : s) = [(Paper, s)]
+  readsPrec _ ('C' : s) = [(Scissors, s)]
+  readsPrec _ ('X' : s) = [(Rock, s)]
+  readsPrec _ ('Y' : s) = [(Paper, s)]
+  readsPrec _ ('Z' : s) = [(Scissors, s)]
+  readsPrec _ _ = []
 
 parse2 :: String -> [GameHint]
-parse2 content = map readGameHint $ lines content
+parse2 content = map read $ lines content
 
--- TODO This can be improved
-readGameHint :: String -> GameHint
-readGameHint line = listToGameHint $ take 2 $ words line
-
-listToGameHint :: [String] -> GameHint
-listToGameHint [a, b] = GameHint (readPlay a) (readOrd b)
-listToGameHint _ = error "Invalid game hint"
-
-readOrd :: String -> Ordering
-readOrd "X" = LT
-readOrd "Y" = EQ
-readOrd "Z" = GT
-readOrd _ = error "Invalid hint"
+instance Read GameHint where
+  readsPrec _ (a : ' ' : 'X' : s) = [(GameHint (read [a]) LT, s)]
+  readsPrec _ (a : ' ' : 'Y' : s) = [(GameHint (read [a]) EQ, s)]
+  readsPrec _ (a : ' ' : 'Z' : s) = [(GameHint (read [a]) GT, s)]
+  readsPrec _ _ = []

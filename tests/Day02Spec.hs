@@ -34,9 +34,9 @@ spec = do
 
     describe "game hint" $ do
         it "should guess right play" $ do
-            guessPlay (GameHint Rock EQ) `shouldBe` Rock
-            guessPlay (GameHint Paper LT) `shouldBe` Rock
-            guessPlay (GameHint Scissors GT) `shouldBe` Rock
+            guessHand (GameHint Rock EQ) `shouldBe` Rock
+            guessHand (GameHint Paper LT) `shouldBe` Rock
+            guessHand (GameHint Scissors GT) `shouldBe` Rock
 
     describe "parse" $ do
         it "parse1 example" $ do
