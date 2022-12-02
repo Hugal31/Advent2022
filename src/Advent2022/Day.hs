@@ -6,6 +6,9 @@ data Day = Day ParsedSolveFunc ParsedSolveFunc
 makeDay :: (String -> a) -> (a -> Int) -> (a -> Int) -> Day
 makeDay parse solve1 solve2 = Day (solve1 . parse) (solve2 . parse)
 
+makeDayComplex :: (String -> a) -> (a -> Int) -> (String -> b) -> (b -> Int) -> Day
+makeDayComplex parse1 solve1 parse2 solve2 = Day (solve1 . parse1) (solve2 . parse2)
+
 getPart1 :: Day -> ParsedSolveFunc
 getPart1 (Day p _) = p
 

@@ -54,7 +54,8 @@ common warnings
 library
     import:          warnings
     exposed-modules: Advent2022.Days,
-                     Advent2022.Day01
+                     Advent2022.Day01,
+                     Advent2022.Day02
     other-modules:   Advent2022.Day
     build-depends:   base ^>=4.16.3.0, split ^>=0.2.3
     hs-source-dirs:  src
@@ -85,7 +86,8 @@ executable advent2022-exec
 Test-Suite advent2022-tests
     type: exitcode-stdio-1.0
     main-is: Tests.hs
-    other-modules: Day01Spec
+    other-modules: Day01Spec,
+                   Day02Spec
     hs-source-dirs: tests
     build-depends: base,
                    test-framework,
