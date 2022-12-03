@@ -55,7 +55,8 @@ library
     import:          warnings
     exposed-modules: Advent2022.Days,
                      Advent2022.Day01,
-                     Advent2022.Day02
+                     Advent2022.Day02,
+                     Advent2022.Day03
     other-modules:   Advent2022.Day
     build-depends:   base ^>=4.16.3.0, split ^>=0.2.3
     hs-source-dirs:  src
@@ -88,6 +89,7 @@ Test-Suite advent2022-tests
     main-is: Spec.hs
     other-modules: Day01Spec,
                    Day02Spec,
+                   Day03Spec,
     hs-source-dirs: tests
     build-depends: base,
                    hspec,
