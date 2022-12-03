@@ -7,11 +7,11 @@ import System.Environment (getArgs)
 main :: IO ()
 main = do
     args <- getArgs
-    let dayAndPart = parseDayAndPart args
-    uncurry runDayAndPart dayAndPart
+    let (day, part) = parseDayAndPart args
+    runDayAndPart day part
 
 parseDayAndPart :: [String] -> (Int, Int)
-parseDayAndPart [a, b] = (read a :: Int, read b :: Int)
+parseDayAndPart [a, b] = (read a, read b)
 parseDayAndPart _ = error "Invalid args"
 
 runDayAndPart :: Int -> Int -> IO ()

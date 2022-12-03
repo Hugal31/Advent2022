@@ -19,8 +19,9 @@ ruckstackPriority :: String -> Int
 ruckstackPriority ruckstack = itemPriority $ ruckstackCommon ruckstack
 
 itemPriority :: Char -> Int
-itemPriority c | isUpper c = 27 + fromEnum c - fromEnum 'A'
-itemPriority c = 1 + fromEnum c - fromEnum 'a'
+itemPriority c
+  | isUpper c = 27 + fromEnum c - fromEnum 'A'
+  | otherwise = 1 + fromEnum c - fromEnum 'a'
 
 ruckstackCommon :: String -> Char
 ruckstackCommon ruckstack = head $ uncurry intersect (splitRuckstack ruckstack)
@@ -31,4 +32,4 @@ ruckstacksCommon (a : b : s) = ruckstacksCommon (a `intersect` b : s)
 ruckstacksCommon _ = error "Invalid group"
 
 splitRuckstack :: String -> (String, String)
-splitRuckstack ruckstack = splitAt (length ruckstack `div` (2::Int)) ruckstack
+splitRuckstack ruckstack = splitAt (length ruckstack `div` 2) ruckstack

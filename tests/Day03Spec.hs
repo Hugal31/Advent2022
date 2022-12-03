@@ -13,7 +13,7 @@ spec = do
             itemPriority 'L' `shouldBe` 38
             itemPriority 'v' `shouldBe` 22
 
-        it "shoud find common character in ruckstack" $ do
+        it "should find common character in ruckstack" $ do
             ruckstackCommon "vJrwpWtwJgWrhcsFMMfFFhFp" `shouldBe` 'p'
 
         it "solve1 on example" $ do
@@ -21,6 +21,7 @@ spec = do
 
         it "should find common character between ruckstacks" $ do
             ruckstacksCommon (take 3 exampleList) `shouldBe` 'r'
+            ruckstacksCommon (drop 3 exampleList) `shouldBe` 'Z'
 
         it "solve2 on example" $ do
             solve2 exampleList `shouldBe` 70
