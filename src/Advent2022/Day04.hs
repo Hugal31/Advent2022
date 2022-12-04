@@ -71,3 +71,19 @@ readComma = expectP (L.Punc ",")
 readDash :: ReadPrec ()
 readDash = expectP (L.Punc "-")
 -}
+
+{- From https://github.com/MatthiasCoppens/AOC2022/blob/master/day04/main.hs:
+int :: ReadP Int
+int = fmap read $ many1 $ satisfy isDigit
+
+range :: ReadP (Int, Int)
+range = (,) <$> int <*> (char '-' *> int)
+
+pair :: ReadP ((Int, Int), (Int, Int))
+pair = (,) <$> range <*> (char ',' *> range)
+
+pairs :: ReadP [((Int, Int), (Int, Int))]
+pairs = sepBy pair (char '\n')
+
+
+-}
