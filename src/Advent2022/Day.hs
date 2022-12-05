@@ -1,15 +1,28 @@
-module Advent2022.Day where
+{-# LANGUAGE UndecidableInstances, OverlappingInstances, FlexibleInstances, TypeSynonymInstances #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Unused LANGUAGE pragma" #-}
 
-type ParsedSolveFunc = (String -> Int)
+module Advent2022.Day (Day, ParsedSolveFunc, makeDay, makeDayComplex, getPart) where
+
+type ParsedSolveFunc = (String -> String)
 data Day = Day ParsedSolveFunc ParsedSolveFunc
 
-makeDay :: (String -> a) -> (a -> Int) -> (a -> Int) -> Day
-makeDay parse solve1 solve2 = Day (solve1 . parse) (solve2 . parse)
+makeDayComplex :: (ToString b) => (ToString d) => (String -> a) -> (a -> b) -> (String -> c) -> (c -> d) -> Day
+makeDayComplex parse1 solve1 parse2 solve2 = Day (toString . solve1 . parse1) (toString . solve2 . parse2)
 
-makeDayComplex :: (String -> a) -> (a -> Int) -> (String -> b) -> (b -> Int) -> Day
-makeDayComplex parse1 solve1 parse2 solve2 = Day (solve1 . parse1) (solve2 . parse2)
+makeDay :: (ToString b, ToString c) => (String -> a) -> (a -> b) -> (a -> c) -> Day
+makeDay parse solve1 = makeDayComplex parse solve1 parse
 
-getPart :: Day -> Int -> (String -> Int)
+getPart :: Day -> Int -> (String -> String)
 getPart (Day p _) 1 = p
 getPart (Day _ p) 2 = p
 getPart _ _ = error "Invalid part"
+
+class ToString a where
+    toString :: a -> String
+
+instance ToString String where
+    toString = id
+
+instance Show a => ToString a where
+    toString = show
