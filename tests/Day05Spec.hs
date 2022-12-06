@@ -1,4 +1,4 @@
-module Day05Spec where
+module Day05Spec (spec) where
 
 import Advent2022.Day05
 import Text.ParserCombinators.ReadP (readP_to_S, ReadP)

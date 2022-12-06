@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Unused LANGUAGE pragma" #-}
 
-module Advent2022.Day (Day, ParsedSolveFunc, makeDay, makeDayComplex, getPart) where
+module Advent2022.Day (Day(Day), ParsedSolveFunc, makeDay, makeDayComplex, getPart) where
 
 type ParsedSolveFunc = (String -> String)
 data Day = Day ParsedSolveFunc ParsedSolveFunc

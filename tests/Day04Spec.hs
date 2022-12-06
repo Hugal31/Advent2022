@@ -1,4 +1,4 @@
-module Day04Spec where
+module Day04Spec (spec) where
 
 import Advent2022.Day04
 import Test.Hspec

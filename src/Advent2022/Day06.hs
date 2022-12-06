@@ -33,7 +33,7 @@ hasDuplicate' :: (Eq a) => [a] -> Bool
 hasDuplicate' [] = False
 hasDuplicate' [_] = False
 hasDuplicate' (a : xs@(b : _)) | a == b = True
-                           | otherwise = hasDuplicate' xs
+                               | otherwise = hasDuplicate' xs
 
 -- From https://stackoverflow.com/a/27733778
 window :: Int -> [a] -> [[a]]
