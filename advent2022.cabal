@@ -113,4 +113,5 @@ Benchmark advent2022-bench
                    criterion,
                    advent2022,
     other-modules: Misc,
+                   Day06Bench,
     default-language: Haskell2010
