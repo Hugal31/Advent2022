@@ -67,14 +67,14 @@ parse = fst . last . readP_to_S parseCargo
 parseCargo :: ReadP Cargo
 parseCargo = do
     layout <- parseLayout
-    _ <- many1 (satisfy isSpace)
+    _ <- skipSpaces
     instructions <- parseInstructions
     return (layout, instructions)
 
 parseLayout :: ReadP Layout
 parseLayout = do
     rows <- sepBy1 parseLayoutLine (char '\n')
-    _ <- many1 (satisfy isSpace)
+    _ <- skipSpaces
     _ <- parseRowNumberLine
     return (map flattenMaybes $ transpose rows)
 
@@ -91,13 +91,13 @@ parseLayoutLine :: ReadP [Maybe Char]
 parseLayoutLine = sepBy parseLayoutItem (char ' ')
 
 parseLayoutItem :: ReadP (Maybe Char)
-parseLayoutItem = (Just <$> (char '[' *> get <* char ']')) +++ (string "   " $> Nothing)
+parseLayoutItem = (Just <$> between (char '[') (char ']') get) <++ (string "   " $> Nothing)
 
 parseRowNumberLine :: ReadP [Int]
 parseRowNumberLine = optional (char ' ') *> sepBy1 parseInt (many1 $ char ' ')
 
 parseInstructions :: ReadP Instructions
-parseInstructions = sepBy parseInstruction (char '\n')
+parseInstructions = sepBy parseInstruction (char '\n') <* optional (char '\n')
 
 parseInstruction :: ReadP Instruction
 parseInstruction = Instruction <$> prefixedInt "move " <*> prefixedInt " from " <*> prefixedInt " to "
@@ -106,4 +106,4 @@ prefixedInt :: String -> ReadP Int
 prefixedInt s = string s *> parseInt
 
 parseInt :: ReadP Int
-parseInt = fmap read $ many1 $ satisfy isDigit
+parseInt = read <$> many1 (satisfy isDigit)
