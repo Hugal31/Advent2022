@@ -3,7 +3,7 @@ module Advent2022.Day05 where
 import Advent2022.Day
 
 import Text.ParserCombinators.ReadP
-import Data.Char (isDigit, isSpace)
+import Data.Char (isDigit)
 import Data.Foldable (foldl')
 import Data.Functor ( ($>) )
 import Data.List (transpose)

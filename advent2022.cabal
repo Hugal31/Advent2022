@@ -58,7 +58,8 @@ library
                      Advent2022.Day02,
                      Advent2022.Day03,
                      Advent2022.Day04,
-                     Advent2022.Day05
+                     Advent2022.Day05,
+                     Advent2022.Day06,
     other-modules:   Advent2022.Day
     build-depends:   base ^>=4.16.3.0, split ^>=0.2.3
     hs-source-dirs:  src
@@ -94,6 +95,7 @@ Test-Suite advent2022-tests
                    Day03Spec,
                    Day04Spec,
                    Day05Spec,
+                   Day06Spec,
     hs-source-dirs: tests
     build-depends: base,
                    hspec,
