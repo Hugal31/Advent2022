@@ -1,9 +1,9 @@
 module Advent2022.Day05 where
 
 import Advent2022.Day
+import Advent2022.ParseUtils (prefixedInt, parseInt)
 
 import Text.ParserCombinators.ReadP
-import Data.Char (isDigit)
 import Data.Foldable (foldl')
 import Data.Functor ( ($>) )
 import Data.List (transpose)
@@ -101,9 +101,3 @@ parseInstructions = sepBy parseInstruction (char '\n') <* optional (char '\n')
 
 parseInstruction :: ReadP Instruction
 parseInstruction = Instruction <$> prefixedInt "move " <*> prefixedInt " from " <*> prefixedInt " to "
-
-prefixedInt :: String -> ReadP Int
-prefixedInt s = string s *> parseInt
-
-parseInt :: ReadP Int
-parseInt = read <$> many1 (satisfy isDigit)

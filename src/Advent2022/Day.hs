@@ -1,6 +1,4 @@
-{-# LANGUAGE UndecidableInstances, OverlappingInstances, FlexibleInstances, TypeSynonymInstances #-}
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Unused LANGUAGE pragma" #-}
+{-# LANGUAGE UndecidableInstances, FlexibleInstances #-}
 
 module Advent2022.Day (Day(Day), ParsedSolveFunc, makeDay, makeDayComplex, getPart) where
 
