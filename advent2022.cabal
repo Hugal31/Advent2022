@@ -63,7 +63,7 @@ library
                      Advent2022.Day06,
                      Advent2022.Day07,
                      Advent2022.ParseUtils,
-    build-depends:   base ^>=4.16.3.0,
+    build-depends:   base >=4.13.0.0,
                      containers,
                      rosezipper,
                      split ^>=0.2.3
@@ -84,7 +84,7 @@ executable advent2022-exec
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.16.3.0, advent2022
+    build-depends:    base >=4.13, advent2022
 
     -- Directories containing source files.
     hs-source-dirs:   app

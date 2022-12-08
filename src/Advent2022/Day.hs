@@ -19,7 +19,7 @@ getPart _ _ = error "Invalid part"
 class ToString a where
     toString :: a -> String
 
-instance ToString String where
+instance {-# OVERLAPPING #-} ToString String where
     toString = id
 
 instance Show a => ToString a where
