@@ -62,6 +62,8 @@ library
                      Advent2022.Day05,
                      Advent2022.Day06,
                      Advent2022.Day07,
+                     Advent2022.Day08,
+                     Advent2022.Misc,
                      Advent2022.ParseUtils,
     build-depends:   base >=4.13.0.0,
                      containers,
@@ -102,6 +104,7 @@ Test-Suite advent2022-tests
                    Day05Spec,
                    Day06Spec,
                    Day07Spec,
+                   Day08Spec,
     hs-source-dirs: tests
     build-depends: base,
                    containers,
