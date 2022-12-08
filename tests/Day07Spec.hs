@@ -26,17 +26,16 @@ spec = do
     describe "filesystem" $ do
         it "should create correct tree" $ do
             buildTree [Command (CD "/"), Command LS, File (Regular "a.txt" 1234), File (Regular "b.txt" 2)]
-                `shouldBe` Node {rootLabel=Dir "", subForest=[Node {rootLabel=Regular "a.txt" 1234, subForest=[]}, Node {rootLabel=Regular "b.txt" 2, subForest=[]}]}
+                `shouldBe` Node {rootLabel=Dir "", subForest=[pure (Regular "a.txt" 1234), pure (Regular "b.txt" 2)]}
             buildTree [Command (CD "/"), Command LS, File (Regular "b.txt" 2), File (Regular "a.txt" 1234)]
-                `shouldBe` Node {rootLabel=Dir "", subForest=[Node {rootLabel=Regular "a.txt" 1234, subForest=[]}, Node {rootLabel=Regular "b.txt" 2, subForest=[]}]}
+                `shouldBe` Node {rootLabel=Dir "", subForest=[pure (Regular "a.txt" 1234), pure (Regular "b.txt" 2)]}
             buildTree [Command (CD "/"), Command (CD "a"), Command LS, File (Regular "b.txt" 2), File (Regular "a.txt" 1234)]
-                `shouldBe` Node {rootLabel=Dir "", subForest=[Node {rootLabel=Dir "a", subForest=[Node {rootLabel=Regular "a.txt" 1234, subForest=[]}, Node {rootLabel=Regular "b.txt" 2, subForest=[]}]}]}
+                `shouldBe` Node {rootLabel=Dir "", subForest=[Node {rootLabel=Dir "a", subForest=[pure (Regular "a.txt" 1234), pure (Regular "b.txt" 2)]}]}
             buildTree [Command (CD "c"), Command (CD ".."), Command LS, File (Regular "b.txt" 2), File (Regular "a.txt" 1234)]
-                `shouldBe` Node {rootLabel=Dir "", subForest=[Node {rootLabel=Regular "a.txt" 1234, subForest=[]}, Node {rootLabel=Regular "b.txt" 2, subForest=[]}, Node {rootLabel=Dir "c", subForest=[]}]}
+                `shouldBe` Node {rootLabel=Dir "", subForest=[pure (Regular "a.txt" 1234), pure (Regular "b.txt" 2), pure (Dir "c")]}
 
-    describe "fileTreeSize" $ do
         it "should give file size" $ do
-            fileTreeSize (Node {rootLabel=Regular "a.txt" 1234, subForest=[]}) `shouldBe` 1234
+            fileTreeSize (pure (Regular "a.txt" 1234)) `shouldBe` 1234
             fileTreeSize exampleTree `shouldBe` 48381165
 
     describe "solve1" $ do
