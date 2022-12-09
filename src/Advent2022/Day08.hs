@@ -3,7 +3,8 @@ module Advent2022.Day08 where
 import Advent2022.Day (Day, makeDay)
 import Advent2022.Misc (removeDuplicates)
 
-import GHC.Arr (Array, assocs, bounds, listArray)
+import GHC.Arr (Array, assocs, bounds, listArray, indices, (!))
+import Data.List.HT (takeUntil)
 
 type Index = (Int, Int)
 type Assoc = (Index, Int)
@@ -16,13 +17,27 @@ solve1 :: Grid -> Int
 solve1 = length . removeDuplicates . listVisibles
 
 solve2 :: Grid -> Int
-solve2 = const 0
+solve2 grid = maximum $ map (scenicScore grid) $ filter (not . isBound bnds) $ indices grid where
+    bnds = bounds grid
+
+isBound :: (Index, Index) -> Index -> Bool
+isBound ((xMin, yMin), (xMax, yMax)) (x, y) = x == xMin || x == xMax || y == yMin || y == yMax
 
 column :: Int -> Grid -> [Assoc]
 column i = filter (\((_, x), _) -> x == i) . assocs
 
 row :: Int -> Grid -> [Assoc]
 row i = filter (\((y, _), _) -> y == i) . assocs
+
+scenicScore :: Grid -> Index -> Int
+scenicScore grid start@(startX, startY) = upTest * downTest * leftTest * rightTest where
+    startHeight = grid ! start
+    ((xMin, yMin), (xMax, yMax)) = bounds grid
+    upTest = seeTest [(x, startY) | x <- [startX + 1..xMax]]
+    downTest = seeTest [(x, startY) | x <- [startX - 1,startX - 2..xMin]]
+    rightTest = seeTest [(startX, y) | y <- [startY + 1..yMax]]
+    leftTest = seeTest [(startX, y) | y <- [startY - 1,startY - 2..yMin]]
+    seeTest = length . takeUntil (>= startHeight) . map (grid !)
 
 listVisibles :: Grid -> [Index]
 listVisibles grid = concat [columnTests, rowTests, revColumnTests, revRowColumnTests] where

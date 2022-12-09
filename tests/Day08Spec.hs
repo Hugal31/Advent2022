@@ -24,6 +24,10 @@ spec = do
         it "should solve example" $ do
             solve1 exampleArray `shouldBe` 21
 
+    describe "solve2" $ do
+        it "should solve example" $ do
+            solve2 exampleArray `shouldBe` 8
+
 exampleString = "30373\n\
 \25512\n\
 \65332\n\
