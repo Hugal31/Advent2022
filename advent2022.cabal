@@ -64,10 +64,12 @@ library
                      Advent2022.Day07,
                      Advent2022.Day08,
                      Advent2022.Day09,
+                     Advent2022.Day10,
                      Advent2022.Misc,
                      Advent2022.ParseUtils,
     build-depends:   base >=4.13.0.0,
                      containers,
+                     mtl,
                      rosezipper,
                      utility-ht,
                      split ^>=0.2.3
@@ -108,12 +110,14 @@ Test-Suite advent2022-tests
                    Day07Spec,
                    Day08Spec,
                    Day09Spec,
+                   Day10Spec,
     hs-source-dirs: tests
     build-depends: base,
                    containers,
                    hspec,
                    hspec-contrib,
                    hspec-discover,
+                   mtl,
                    rosezipper,
                    advent2022
     default-language: Haskell2010

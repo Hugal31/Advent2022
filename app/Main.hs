@@ -17,7 +17,7 @@ parseDayAndPart _ = error "Invalid args"
 runDayAndPart :: Int -> Int -> IO ()
 runDayAndPart day part = do
     content <- readFile (dayInputFile day)
-    printf "Day %d part %d: %s\n" day part $ Advent2022.Days.getDayPart day part content
+    printf "Day %d part %d:\n%s\n" day part $ Advent2022.Days.getDayPart day part content
 
 dayInputFile :: Int -> String
 dayInputFile = printf "inputs/day%02d.txt"
