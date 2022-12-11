@@ -19,3 +19,19 @@ hasDuplicate' [] = False
 hasDuplicate' [_] = False
 hasDuplicate' (a : xs@(b : _)) | a == b = True
                                | otherwise = hasDuplicate' xs
+
+rpad :: [a] -> Int -> a -> [a]
+rpad a n d = if missing > 0 then a ++ replicate missing d else a where
+    l = length a
+    missing = n - l
+
+zipWithDefaultR :: (a -> b -> c) -> b -> [a] -> [b] -> [c]
+zipWithDefaultR f bDefault (a:as) (b:bs) = f a b : zipWithDefaultR f bDefault as bs
+zipWithDefaultR f bDefault (a:as) [] = f a bDefault : zipWithDefaultR f bDefault as []
+zipWithDefaultR _ _ [] _ = []
+
+zipWithDefault :: (a -> a -> b) -> a -> [a] -> [a] -> [b]
+zipWithDefault f def (a:as) (b:bs) = f a b : zipWithDefault f def as bs
+zipWithDefault f def (a:as) [] = f a def : zipWithDefault f def as []
+zipWithDefault f def [] (b:bs) = f b def : zipWithDefault f def [] bs
+zipWithDefault _ _ [] [] = []
