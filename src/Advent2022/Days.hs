@@ -13,6 +13,7 @@ import qualified Advent2022.Day08
 import qualified Advent2022.Day09
 import qualified Advent2022.Day10
 import qualified Advent2022.Day11
+import qualified Advent2022.Day12
 
 days :: [Day]
 days = [Advent2022.Day01.day,
@@ -25,7 +26,8 @@ days = [Advent2022.Day01.day,
         Advent2022.Day08.day,
         Advent2022.Day09.day,
         Advent2022.Day10.day,
-        Advent2022.Day11.day]
+        Advent2022.Day11.day,
+        Advent2022.Day12.day]
 
 getDay :: Int -> Day
 getDay day = days !! (day - 1)
