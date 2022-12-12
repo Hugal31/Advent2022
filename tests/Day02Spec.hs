@@ -1,6 +1,7 @@
 module Day02Spec (spec) where
 
 import Advent2022.Day02
+import Advent2022.ParseUtils (runParsec)
 import Test.Hspec
 
 spec :: Spec
@@ -43,6 +44,14 @@ spec = do
             parse1 exampleText `shouldBe` exampleList1
         it "parse2 example" $ do
             parse2 exampleText `shouldBe` exampleList2
+
+        it "should parse a hand" $ do
+            runParsec parseHand "A" `shouldBe` Rock
+            runParsec parseHand "B" `shouldBe` Paper
+            runParsec parseHand "C" `shouldBe` Scissors
+            runParsec parseHand "X" `shouldBe` Rock
+            runParsec parseHand "Y" `shouldBe` Paper
+            runParsec parseHand "Z" `shouldBe` Scissors
 
     describe "solve 1 gives the right score for multiple rounds" $ do
         it "should solve example" $ do

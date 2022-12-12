@@ -1,6 +1,9 @@
 module Advent2022.Day02 where
 
 import Advent2022.Day (Day, makeDayComplex)
+import Advent2022.ParseUtils (runParsec)
+import Data.Functor (($>))
+import Text.Parsec
 
 day :: Day
 day = makeDayComplex parse1 solve1 parse2 solve2
@@ -55,26 +58,31 @@ roundOutcomeScore GT = 6
 -- Parsing
 
 parse1 :: String -> [Game]
-parse1 content = map read $ lines content
-
-instance Read Game where
-  readsPrec _ (a : ' ' : b : s) = [(Game (read [a]) (read [b]), s)]
-  readsPrec _ _ = []
-
-instance Read Hand where
-  readsPrec _ ('A' : s) = [(Rock, s)]
-  readsPrec _ ('B' : s) = [(Paper, s)]
-  readsPrec _ ('C' : s) = [(Scissors, s)]
-  readsPrec _ ('X' : s) = [(Rock, s)]
-  readsPrec _ ('Y' : s) = [(Paper, s)]
-  readsPrec _ ('Z' : s) = [(Scissors, s)]
-  readsPrec _ _ = []
+parse1 = runParsec (parseGames <* eof)
 
 parse2 :: String -> [GameHint]
-parse2 content = map read $ lines content
+parse2 = runParsec (parseGameHints <* eof)
 
-instance Read GameHint where
-  readsPrec _ (a : ' ' : 'X' : s) = [(GameHint (read [a]) LT, s)]
-  readsPrec _ (a : ' ' : 'Y' : s) = [(GameHint (read [a]) EQ, s)]
-  readsPrec _ (a : ' ' : 'Z' : s) = [(GameHint (read [a]) GT, s)]
-  readsPrec _ _ = []
+parseGames :: Parsec String () [Game]
+parseGames = sepEndBy parseGame (char '\n')
+
+parseGame :: Parsec String () Game
+parseGame = Game <$> parseHand <*> (char ' ' *> parseHand)
+
+parseGameHints :: Parsec String () [GameHint]
+parseGameHints = sepEndBy parseGameHint newline
+
+parseGameHint :: Parsec String () GameHint
+parseGameHint = GameHint <$> parseHand <*> (char ' ' *> parseHint)
+
+parseHand :: Parsec String () Hand
+parseHand = choice [ (char 'A' <|> char 'X') $> Rock
+                   , (char 'B' <|> char 'Y') $> Paper
+                   , (char 'C' <|> char 'Z') $> Scissors
+                   ]
+
+parseHint :: Parsec String () Ordering
+parseHint = choice [ char 'X' $> LT
+                   , char 'Y' $> EQ
+                   , char 'Z' $> GT
+                   ]
