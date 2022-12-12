@@ -24,14 +24,18 @@ spec = do
             toHeight 'E' `shouldBe` 25
             toHeight 'i' `shouldBe` 8
 
+    describe "grid" $ do
+        it "climb down grid should enumerate valid neighbors" $ do
+            neighbors (ClimbGrid (listArray ((0,0), (1, 1)) [5, 8, 6, 7])) (0, 0) `shouldBe` [(1, 0)]
+
     describe "dijkstra" $ do
         it "should fill a grid with shortest path" $ do
             let grid = listArray ((0,0), (1, 1)) [5, 8, 6, 7] in do
-                elems (fillDijkstra canGoUp grid (0, 0)) `shouldBe` [0, 3, 1, 2]
+                elems (fillDijkstra (ClimbGrid grid) (0, 0)) `shouldBe` [0, 3, 1, 2]
 
     describe "parse" $ do
         it "should parse example" $ do
-            bounds exampleList `shouldBe` ((0, 0), (4, 7))
+            GHC.Arr.bounds exampleList `shouldBe` ((0, 0), (4, 7))
             exampleList ! (0, 0) `shouldBe` 'S'
             exampleList ! (4, 7) `shouldBe` 'i'
 
