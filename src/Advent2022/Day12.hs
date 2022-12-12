@@ -43,7 +43,7 @@ fillDijkstra' canGo heighGrid distGrid ((curr, prevDist):toTry) = do
         _ <- writeSTArray distGrid curr prevDist
         let currHeight = heighGrid ! curr
         let neighbors = map (,prevDist+1) $ filter (\i -> canGo currHeight (heighGrid ! i)) $ listNeighbors curr (bounds heighGrid)
-        fillDijkstra' canGo heighGrid distGrid (neighbors ++ toTry)
+        fillDijkstra' canGo heighGrid distGrid (toTry ++ neighbors)
     else do
         fillDijkstra' canGo heighGrid distGrid toTry
 fillDijkstra' _ _ _ [] = pure ()
