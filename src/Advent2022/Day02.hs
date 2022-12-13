@@ -67,13 +67,13 @@ parseGames :: Parsec String () [Game]
 parseGames = sepEndBy parseGame (char '\n')
 
 parseGame :: Parsec String () Game
-parseGame = Game <$> parseHand <*> (char ' ' *> parseHand)
+parseGame = Game <$> parseHand <* char ' ' <*> parseHand
 
 parseGameHints :: Parsec String () [GameHint]
 parseGameHints = sepEndBy parseGameHint newline
 
 parseGameHint :: Parsec String () GameHint
-parseGameHint = GameHint <$> parseHand <*> (char ' ' *> parseHint)
+parseGameHint = GameHint <$> parseHand <* char ' ' <*> parseHint
 
 parseHand :: Parsec String () Hand
 parseHand = choice [ (char 'A' <|> char 'X') $> Rock

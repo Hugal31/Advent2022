@@ -2,18 +2,19 @@ module Advent2022.Days where
 
 import Advent2022.Day (ParsedSolveFunc, Day, getPart)
 
-import qualified Advent2022.Day01
-import qualified Advent2022.Day02
-import qualified Advent2022.Day03
-import qualified Advent2022.Day04
-import qualified Advent2022.Day05
-import qualified Advent2022.Day06
-import qualified Advent2022.Day07
-import qualified Advent2022.Day08
-import qualified Advent2022.Day09
-import qualified Advent2022.Day10
-import qualified Advent2022.Day11
-import qualified Advent2022.Day12
+import qualified Advent2022.Day01 (day)
+import qualified Advent2022.Day02 (day)
+import qualified Advent2022.Day03 (day)
+import qualified Advent2022.Day04 (day)
+import qualified Advent2022.Day05 (day)
+import qualified Advent2022.Day06 (day)
+import qualified Advent2022.Day07 (day)
+import qualified Advent2022.Day08 (day)
+import qualified Advent2022.Day09 (day)
+import qualified Advent2022.Day10 (day)
+import qualified Advent2022.Day11 (day)
+import qualified Advent2022.Day12 (day)
+import qualified Advent2022.Day13 (day)
 
 days :: [Day]
 days = [Advent2022.Day01.day,
@@ -27,7 +28,8 @@ days = [Advent2022.Day01.day,
         Advent2022.Day09.day,
         Advent2022.Day10.day,
         Advent2022.Day11.day,
-        Advent2022.Day12.day]
+        Advent2022.Day12.day,
+        Advent2022.Day13.day]
 
 getDay :: Int -> Day
 getDay day = days !! (day - 1)

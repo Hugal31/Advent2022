@@ -1,28 +1,48 @@
 {-# LANGUAGE FlexibleContexts #-}
 
-module Advent2022.ParseUtils where
+module Advent2022.ParseUtils (
+    integer,
+    prefixedInt,
+    parseInt,
+    getNotWhitespace,
+    runReadP,
+    runParsec,
+    ) where
 
-import Text.ParserCombinators.ReadP
-import qualified Text.Parsec
+import qualified Text.ParserCombinators.ReadP as ReadP
+import Text.Parsec
 import Data.Char (isDigit, isSpace)
 import Data.Functor.Identity (Identity)
 
-prefixedInt :: String -> ReadP Int
-prefixedInt s = string s *> parseInt
+prefixedInt :: String -> ReadP.ReadP Int
+prefixedInt s = ReadP.string s *> parseInt
 
-parseInt :: ReadP Int
-parseInt = read <$> ((++) <$> optional' (char '-') <*> many1 (satisfy isDigit))
+parseInt :: ReadP.ReadP Int
+parseInt = read <$> ((++) <$> optional' (ReadP.char '-') <*> ReadP.many1 (ReadP.satisfy isDigit))
 
-optional' :: ReadP a -> ReadP String
-optional' a = fst <$> gather (optional a)
+optional' :: ReadP.ReadP a -> ReadP.ReadP String
+optional' a = fst <$> ReadP.gather (ReadP.optional a)
 
-getNotWhitespace :: ReadP String
-getNotWhitespace = many1 (satisfy (not . isSpace))
+getNotWhitespace :: ReadP.ReadP String
+getNotWhitespace = ReadP.many1 (ReadP.satisfy (not . isSpace))
 
-runReadP :: ReadP a -> String -> a
-runReadP p = fst . last . readP_to_S p
+runReadP :: ReadP.ReadP a -> String -> a
+runReadP p = fst . last . ReadP.readP_to_S p
 
-runParsec :: (Text.Parsec.Stream s Identity t) => Text.Parsec.Parsec s () a -> s -> a
+runParsec :: (Stream s Identity t) => Parsec s () a -> s -> a
 runParsec parser s = case Text.Parsec.parse parser "" s of
-  Left e -> error (show e)
-  Right a -> a
+    Left e -> error (show e)
+    Right a -> a
+
+-- Copied from Text.Parsec.Token: i didn't find a way to extract them from the GenTokenParser
+
+natural :: (Read a, Integral a) => Parsec String u a
+natural = read <$> many1 (satisfy isDigit)
+
+integer :: (Read a, Integral a) => Parsec String u a
+integer = sign <*> natural
+
+sign :: (Num a) => Parsec String u (a -> a)
+sign = (char '+' >> return id)
+    <|> (char '-' >> return negate)
+    <|> return id
