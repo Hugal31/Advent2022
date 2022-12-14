@@ -48,17 +48,19 @@ processRound' ((n, prog):xs) heap nInspecs (l:ls) = processRound' xs heap' (leng
     thrown = throwItems prog l
     (thrownToNextMonkeys, thrownToPreviousMonkeys) = partition ((> n) . snd) thrown
     heap' = heap ++ thrownToPreviousMonkeys
-    ls' = resolveHeapFrom (n+1) (toHeapFrom (n+1) ls ++ thrownToNextMonkeys)
+    ls' = mergeHeapToLootFrom (n+1) ls thrownToNextMonkeys
 processRound' _ heap nInspecs [] = (reverse nInspecs, resolveHeap heap)
 processRound' [] _ _ _ = undefined
 
-toHeapFrom :: Int -> [Loot] -> [(Int, Int)]
-toHeapFrom n ls = reverse $ toHeapFrom' n [] ls
-
-toHeapFrom' :: Num b => b -> [(a, b)] -> [[a]] -> [(a, b)]
-toHeapFrom' n acc ((l:ls):lss) = toHeapFrom' n ((l, n) : acc) (ls : lss)
-toHeapFrom' n acc ([]:lss) = toHeapFrom' (n+1) acc lss
-toHeapFrom' _ acc [] = acc
+-- [(item, dest)]
+mergeHeapToLootFrom :: Int -> [Loot] -> [(Int, Int)] -> [Loot]
+mergeHeapToLootFrom _ l [] = l
+mergeHeapToLootFrom n [] heap = loot'' : mergeHeapToLootFrom (n+1) [] heap' where
+    (loot', heap') = partition ((==n) . snd) heap
+    loot'' = map fst loot'
+mergeHeapToLootFrom n (loot:loots) heap = (loot ++ loot'') : mergeHeapToLootFrom (n+1) loots heap' where
+    (loot', heap') = partition ((==n) . snd) heap
+    loot'' = map fst loot'
 
 -- [(item, dest)]
 resolveHeap :: [(Int, Int)] -> [Loot]

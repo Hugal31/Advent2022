@@ -8,6 +8,7 @@ import Text.Printf (printf)
 import Control.Monad
 
 import qualified Day06Bench
+import qualified Day11Bench
 import qualified Misc
 
 main = do
@@ -16,7 +17,8 @@ main = do
     defaultMain [
         bgroup "misc" Misc.benches,
         bgroup "days" $ days ++ [
-                Day06Bench.benches (daysInputs' !! 5)
+                Day06Bench.benches (daysInputs' !! 5),
+                Day11Bench.benches (daysInputs' !! 12)
             ]
         ]
 

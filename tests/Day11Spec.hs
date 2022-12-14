@@ -47,8 +47,8 @@ spec = do
         it "should resolve heap" $ do
             resolveHeap [(42, 3), (3, 0), (2, 2), (8, 0)] `shouldBe` [[3, 8], [], [2], [42]]
 
-        it "should build heap" $ do
-            toHeapFrom 3 [[], [2, 3], [4], [], []] `shouldBe` [(2, 4), (3, 4), (4, 5)]
+        it "should merge heap" $ do
+            mergeHeapToLootFrom 0 [] [(42, 3), (10, 0)] `shouldBe` [[10], [], [], [42]]
 
     describe "round program" $ do
         it "should process a round" $ do

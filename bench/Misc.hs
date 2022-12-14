@@ -1,4 +1,4 @@
-module Misc (benches) where
+module Misc (compareFuncs, benches) where
 
 import qualified Advent2022.Day06 (hasDuplicate, window)
 import qualified Data.List.Split
