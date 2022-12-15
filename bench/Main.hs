@@ -9,6 +9,7 @@ import Control.Monad
 
 import qualified Day06Bench
 import qualified Day11Bench
+import qualified Day15Bench
 import qualified Misc
 
 main = do
@@ -18,7 +19,8 @@ main = do
         bgroup "misc" Misc.benches,
         bgroup "days" $ days ++ [
                 Day06Bench.benches (daysInputs' !! 5),
-                Day11Bench.benches (daysInputs' !! 12)
+                Day11Bench.benches (daysInputs' !! 12),
+                Day15Bench.benches (daysInputs' !! 14)
             ]
         ]
 
