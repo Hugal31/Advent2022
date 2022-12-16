@@ -5,6 +5,7 @@
 module Advent2022.ParseUtils (
     integer,
     prefixedInt,
+    parseNonSpace,
     parseInt,
     getNotWhitespace,
     runReadP,
@@ -62,3 +63,6 @@ sign :: (Num a) => Parsec String u (a -> a)
 sign = (char '+' >> return id)
     <|> (char '-' >> return negate)
     <|> return id
+
+parseNonSpace :: Parsec String u String
+parseNonSpace = many1 (satisfy (not . isSpace))
