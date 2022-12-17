@@ -56,9 +56,6 @@ listCombinations :: Int -> [(BitIntSet, BitIntSet)]
 listCombinations nValves = map (\i -> (BitIntSet i, BitIntSet (allSet .&. complement i))) [1..(allSet - 1)] where
     allSet = bit nValves - 1
 
-testConcat :: (Monad m) => m [a] -> m [a] -> m [a]
-testConcat a b = (++) <$> a <*> b
-
 runAround :: (Ord is, IntSetLike is, G.Graph gr, MonadMemo (G.Node, is, Time) Flow m) => gr Int () -> DistanceMap -> G.Node -> is -> Time -> m Flow
 runAround _ _ _ _ 0 = return 0
 runAround _ _ _ _ 1 = return 0
@@ -67,11 +64,12 @@ runAround g dm node toVisit time | size toVisit <= 1 || time == 2 = return flowS
     flowScore = fromJust (G.lab g node) * (time - 1)
     distanceToNode n = forceLookup (node, n) dm
     otherNodes = delete node toVisit
-    otherNodesReachableInTime = Advent2022.Day16.filter (\n -> distanceToNode n < time + 2) otherNodes
-    otherNodesReachableInTime' = toList otherNodesReachableInTime
+    otherNodesAndTime = map (\n -> (n, distanceToNode n)) (toList otherNodes)
+    otherNodesReachableInTime = Prelude.filter ((< time + 1) . snd) otherNodesAndTime --Advent2022.Day16.filter (\n -> distanceToNode n < time + 2) otherNodes
+    otherNodesReachableInTime' = fromList (map fst otherNodesReachableInTime)
     rests = if flowScore > 0
-        then mapM (\n -> (flowScore +) <$> for3 memo (runAround g dm) n otherNodesReachableInTime (time - 1 - distanceToNode n)) otherNodesReachableInTime'
-        else mapM (\n -> for3 memo (runAround g dm) n otherNodesReachableInTime (time - distanceToNode n)) otherNodesReachableInTime'
+        then mapM (\(n, d) -> (flowScore +) <$> for3 memo (runAround g dm) n otherNodesReachableInTime' (time - 1 - d)) otherNodesReachableInTime
+        else mapM (\(n, d) -> for3 memo (runAround g dm) n otherNodesReachableInTime' (time - d)) otherNodesReachableInTime
     maximumDefault [] = 0
     maximumDefault a = maximum a
 
