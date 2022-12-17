@@ -4,6 +4,7 @@ module Day16Spec (spec) where
 import Advent2022.Day16
 import Advent2022.ParseUtils
 
+import Data.Bifunctor (bimap)
 import Data.Functor ((<&>))
 import qualified Data.Graph.Inductive.Graph as G
 import qualified Data.Map as Map (lookup)
@@ -14,6 +15,7 @@ import GHC.Arr ((!))
 import Data.Tree (drawForest)
 import Control.Monad.Identity (runIdentity)
 import Control.Monad.Memo (startEvalMemo)
+import Data.Bits (complement)
 
 spec :: Spec
 spec = describe "parsing" $ do
@@ -26,10 +28,9 @@ spec = describe "parsing" $ do
             let (graph, vertexFromKey) = forceGraphType buildGraph exampleList
                 vertexFromKey' = fromJust . vertexFromKey
                 in do
-                    vertexFromKey' "CC" `shouldBe` 2
                     (vertexFromKey "CC" >>= G.lab graph) `shouldBe` Just 2
-                    G.suc graph (vertexFromKey' "CC") `shouldBe` [vertexFromKey' "BB", vertexFromKey' "DD"]
-                    G.pre graph (vertexFromKey' "CC") `shouldBe` [vertexFromKey' "BB", vertexFromKey' "DD"]
+                    G.suc graph (vertexFromKey' "CC") `shouldMatchList` [vertexFromKey' "BB", vertexFromKey' "DD"]
+                    G.pre graph (vertexFromKey' "CC") `shouldMatchList` [vertexFromKey' "BB", vertexFromKey' "DD"]
 
         it "should build distance map" $ do
             let (graph, vertexFromKey) = exampleGraphAndMap
@@ -43,7 +44,7 @@ spec = describe "parsing" $ do
 
     describe "runAround" $ do
         let (graph, vertexFromKey) = exampleGraphAndMap
-            go v i = runAround graph distanceMap v (IS.fromList i)
+            go v i = runAround graph distanceMap v (fromList i :: BitIntSet)
             vertexFromKey' = fromJust . vertexFromKey
             aa = vertexFromKey' "AA"
             bb = vertexFromKey' "BB"
@@ -64,9 +65,32 @@ spec = describe "parsing" $ do
             it "should not choose to open the valve when it's the best solution" $ do
                 startEvalMemo (go cc [bb, cc] 3) `shouldBe` 13
 
+    describe "bitset" $ do
+        it "should behave like intset" $ do
+            member 0 (empty::BitIntSet) `shouldBe` False
+            member 42 (singleton 42::BitIntSet) `shouldBe` True
+            member 42 (singleton 10::BitIntSet) `shouldBe` False
+            member 3 (fromList [3, 10]::BitIntSet) `shouldBe` True
+            member 3 (delete 3 (singleton 3::BitIntSet)) `shouldBe` False
+            Advent2022.Day16.null (empty::BitIntSet) `shouldBe` True
+            Advent2022.Day16.null (singleton 3::BitIntSet) `shouldBe` False
+            member 2 (fromList [3,6,9,40,4]::BitIntSet) `shouldBe` False
+            member 3 (fromList [3,6,9,40,4]::BitIntSet) `shouldBe` True
+            toList (singleton 4::BitIntSet) `shouldBe` [4]
+            toList (fromList [3,6,9,40,3]::BitIntSet) `shouldBe` [3, 6, 9, 40]
+            size (fromList [3,6,9,40,3]::BitIntSet) `shouldBe` 4
+            toList (Advent2022.Day16.filter even (fromList [1,2,3,4]::BitIntSet)) `shouldBe` [2,4]
+
     describe "solve1" $ do
         it "should solve example" $ do
             solve1 exampleList `shouldBe` 1651
+
+    describe "solve2" $ do
+        it "should solve example" $ do
+            solve2 exampleList `shouldBe` 1707
+
+        --it "should generate combinations of human/elephant tasks" $ do
+        --    map (bimap toList toList) (listCombinations 2) `shouldMatchList` [([0], [1]), ([1], [0])]
 
 forceGraphType :: (a -> (DefaultGraphType n v , c)) -> (a -> (DefaultGraphType n v, c))
 forceGraphType = id
