@@ -63,17 +63,15 @@ runAround :: (Ord is, IntSetLike is, G.Graph gr, MonadMemo (G.Node, is, Time) Fl
 runAround _ _ _ _ 0 = return 0
 runAround _ _ _ _ 1 = return 0
 runAround g dm node toVisit time | size toVisit <= 1 || time == 2 = return flowScore
-                                 | otherwise = maximumConcat otherNodesIfOpened otherNodesIfNotOpened where
-    !flowScore = fromJust (G.lab g node) * (time - 1)
+                                 | otherwise = maximumDefault <$> rests where
+    flowScore = fromJust (G.lab g node) * (time - 1)
     distanceToNode n = forceLookup (node, n) dm
     otherNodes = delete node toVisit
     otherNodesReachableInTime = Advent2022.Day16.filter (\n -> distanceToNode n < time + 2) otherNodes
-    !otherNodesReachableInTime' = toList otherNodesReachableInTime
-    otherNodesIfOpened = if flowScore > 0 then
-        mapM (\n -> (flowScore +) <$> for3 memo (runAround g dm) n otherNodes (time - 1 - distanceToNode n)) otherNodesReachableInTime'
-        else return []
-    otherNodesIfNotOpened = mapM (\n -> for3 memo (runAround g dm) n toVisit (time - distanceToNode n)) otherNodesReachableInTime'
-    maximumConcat a b = maximumDefault <$> ((++) <$> a <*> b)
+    otherNodesReachableInTime' = toList otherNodesReachableInTime
+    rests = if flowScore > 0
+        then mapM (\n -> (flowScore +) <$> for3 memo (runAround g dm) n otherNodesReachableInTime (time - 1 - distanceToNode n)) otherNodesReachableInTime'
+        else mapM (\n -> for3 memo (runAround g dm) n otherNodesReachableInTime (time - distanceToNode n)) otherNodesReachableInTime'
     maximumDefault [] = 0
     maximumDefault a = maximum a
 

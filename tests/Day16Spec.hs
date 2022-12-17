@@ -62,9 +62,6 @@ spec = describe "parsing" $ do
             it "should choose to open the valve when it's the best solution" $ do
                 startEvalMemo (go bb [bb, cc] 3) `shouldBe` 26
 
-            it "should not choose to open the valve when it's the best solution" $ do
-                startEvalMemo (go cc [bb, cc] 3) `shouldBe` 13
-
     describe "bitset" $ do
         it "should behave like intset" $ do
             member 0 (empty::BitIntSet) `shouldBe` False
